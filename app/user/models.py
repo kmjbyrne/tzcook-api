@@ -8,6 +8,7 @@ from sqlalchemy.ext.hybrid import hybrid_property
 class User(BaseUser):
     __tablename__ = 'user'
     extend_existing = True
+    created = db.Column(db.DateTime(), default=datetime.now())
     last_logged_in = db.Column(db.DateTime(), default=datetime.now())
 
     @hybrid_property

@@ -1,0 +1,16 @@
+#!/bin/bash
+
+echo "[+] Flask Blueprint CLI"
+
+read -p "Enter Blueprint name [e.g home]: " blueprint
+
+if [ [ ${blueprint} == '' ] ]; then
+    echo "[-] Please enter a valid blueprint name"
+    exit
+
+cd app
+
+mkdir ${blueprint}
+
+echo
+echo $name

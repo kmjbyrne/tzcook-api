@@ -10,4 +10,4 @@ if __name__ == '__main__':
         app = create_app(sys.argv[1])
     else:
         app = create_app('DEV')
-    app.run(port=app.config['RUN_PORT'], debug=True, host='0.0.0.0')
+    app.run(port=app.config['RUN_PORT'], debug=app.config.get('DEBUG'), host='0.0.0.0')

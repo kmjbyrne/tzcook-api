@@ -1,9 +1,14 @@
+import logging
+
+from datetime import datetime
+
+from flask import request
 from flask import Flask
-from flask import redirect
-from flask import url_for
+from flask import jsonify
 from flask_cors import CORS
 from flask_electron.db.flaskalchemy.database import db
 
+from app.logger import get_rotating_file_handler
 from app.user import user_blueprint
 from app.ingredient import ingredient_blueprint
 from app.recipe import recipe_blueprint
@@ -11,6 +16,14 @@ from app.category import category_blueprint
 from app.tags import tag_blueprint
 
 _appstate = Flask(__name__, instance_relative_config=True)
+
+apps = [
+    (user_blueprint, '/user'),
+    (ingredient_blueprint, '/ingredient'),
+    (recipe_blueprint, '/recipe'),
+    (category_blueprint, '/category'),
+    (tag_blueprint, '/tag')
+]
 
 
 def verify_release_configuration():
@@ -26,13 +39,18 @@ def verify_release_configuration():
 
 def error_handler(error):
     if error.code == 404:
-        return redirect(url_for('site_controller.index'))
+        return jsonify(error='This resource/page does not exist.')
     elif error.code == 429:
         return error
+    elif error.code == 405:
+        return jsonify(error='Method not allowed for this endpoint')
+    elif error.code == 500:
+        return jsonify(error='An unexpected error has occurred. Support is investigating.')
 
 
 def create_app(env='DEV'):
     appstate = Flask(__name__, instance_relative_config=True)
+
     CORS(appstate, resources=r'/api/*')
 
     config_path = 'app.config.DevelopmentConfig'
@@ -47,13 +65,38 @@ def create_app(env='DEV'):
     appstate.config.from_pyfile('config.cfg', silent=True)
     appstate.app_context().push()
 
-    appstate.register_blueprint(user_blueprint, url_prefix='/user')
-    appstate.register_blueprint(ingredient_blueprint, url_prefix='/ingredient')
-    appstate.register_blueprint(recipe_blueprint, url_prefix='/recipe')
-    appstate.register_blueprint(category_blueprint, url_prefix='/category')
-    appstate.register_blueprint(tag_blueprint, url_prefix='/tag')
+    for app, route in apps:
+        appstate.register_blueprint(app, url_prefix=route)
+
+    appstate.register_error_handler(405, error_handler)
+    appstate.register_error_handler(429, error_handler)
+    appstate.register_error_handler(404, error_handler)
+    appstate.register_error_handler(500, error_handler)
 
     db.init_app(appstate)
     db.create_all()
 
+    @appstate.after_request
+    def after_request(response):
+        """
+        Log all Flask/WSGI output to a separate file for troubleshooting.
+
+        """
+        log_format = '%(name)s - %(message)s'
+        access_logger = logging.getLogger("app.access")
+        access_logger.addHandler(get_rotating_file_handler('/tmp/tzcook.access.log', logging.INFO, log_format))
+        access_logger.setLevel(logging.INFO)
+        access_logger.info(
+            '%s [%s] %s %s %s %s %s %s %s',
+            request.remote_addr,
+            datetime.utcnow().strftime("%d/%b/%Y:%H:%M:%S.%f")[:-3],
+            request.method,
+            request.path,
+            request.scheme,
+            response.status,
+            response.content_length,
+            request.referrer,
+            request.user_agent,
+        )
+        return response
     return appstate

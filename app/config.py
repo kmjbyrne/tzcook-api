@@ -5,7 +5,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 class Config(object):
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    DEBUG = True
+    DEBUG = False
     RUN_PORT = 5000
     TESTING = False
     # SQLALCHEMY_POOL_SIZE = 100

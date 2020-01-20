@@ -1,0 +1,43 @@
+POST http://127.0.0.1:5000/category
+content-type: application/json
+
+{
+    "name": "Chinese"
+}
+
+###
+
+POST http://127.0.0.1:5000/tag
+content-type: application/json
+
+{
+    "name": "Low Carb"
+}
+
+###
+
+POST http://127.0.0.1:5000/recipe
+content-type: application/json
+
+{
+    "name": "Test",
+    "method": "<p>Test This stuff</p>",
+    "category_id": "1",
+    "portions": "4",
+    "time": "45"
+}
+
+###
+
+POST http://127.0.0.1:5000/user
+content-type: application/json
+
+{
+    "username": "dev",
+    "forename": "Keith",
+    "surname": "Byrne",
+    "password": "test",
+    "admin": "Y"
+}
+
+###
