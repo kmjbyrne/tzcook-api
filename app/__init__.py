@@ -66,7 +66,7 @@ def create_app(env='DEV'):
     appstate.app_context().push()
 
     for app, route in apps:
-        appstate.register_blueprint(app, url_prefix=route)
+        appstate.register_blueprint(app, url_prefix='/{}{}'.format('api', route))
 
     appstate.register_error_handler(405, error_handler)
     appstate.register_error_handler(429, error_handler)

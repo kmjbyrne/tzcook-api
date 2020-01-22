@@ -11,6 +11,9 @@ class User(BaseUser):
     created = db.Column(db.DateTime(), default=datetime.now())
     last_logged_in = db.Column(db.DateTime(), default=datetime.now())
 
+    def __repr__(self):
+        return self.fullname
+    
     @hybrid_property
     def fullname(self):
         return '{} {}'.format(self.forename, self.surname)

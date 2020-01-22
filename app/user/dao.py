@@ -12,7 +12,7 @@ class UserDAO(BaseDAO):
     json = False
 
     def __init__(self, model=User):
-        super(UserDAO, self).__init__()
+        super().__init__(model)
         self.user = None
         self.model = model
 

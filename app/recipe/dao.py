@@ -7,5 +7,5 @@ class RecipeDAO(BaseDAO):
     json = False
 
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__(Recipe, *args, **kwargs)
         self.model = Recipe

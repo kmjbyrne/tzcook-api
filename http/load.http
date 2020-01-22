@@ -1,4 +1,4 @@
-POST http://127.0.0.1:5000/category
+POST http://127.0.0.1:5000/api/category
 content-type: application/json
 
 {
@@ -7,7 +7,7 @@ content-type: application/json
 
 ###
 
-POST http://127.0.0.1:5000/tag
+POST http://127.0.0.1:5000/api/tag
 content-type: application/json
 
 {
@@ -16,7 +16,7 @@ content-type: application/json
 
 ###
 
-POST http://127.0.0.1:5000/recipe
+POST http://127.0.0.1:5000/api/recipe
 content-type: application/json
 
 {
@@ -29,7 +29,7 @@ content-type: application/json
 
 ###
 
-POST http://127.0.0.1:5000/user
+POST http://127.0.0.1:5000/api/user
 content-type: application/json
 
 {
